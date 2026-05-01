@@ -24,6 +24,22 @@ const socketHandler = (io) => {
       }
     });
 
+    // Handle typing events
+    socket.on('typing', ({ senderId, receiverId }) => {
+      const receiverSocketId = onlineUsers.get(receiverId);
+      if (receiverSocketId) {
+        io.to(receiverSocketId).emit('typing', { senderId });
+      }
+    });
+
+    socket.on('stopTyping', ({ senderId, receiverId }) => {
+      const receiverSocketId = onlineUsers.get(receiverId);
+      if (receiverSocketId) {
+        io.to(receiverSocketId).emit('stopTyping', { senderId });
+      }
+    });
+
+
     // Handle user disconnect
     socket.on('disconnect', () => {
       // Find the user ID based on socket ID and remove from map

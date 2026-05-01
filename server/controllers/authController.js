@@ -78,7 +78,20 @@ const loginUser = async (req, res) => {
   }
 };
 
+// @desc    Get all users
+// @route   GET /api/auth/users
+// @access  Private
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find({ _id: { $ne: req.user._id } }).select('-password');
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
+  getAllUsers,
 };
