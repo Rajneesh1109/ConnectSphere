@@ -71,7 +71,23 @@ const followUser = async (req, res) => {
   }
 };
 
+// @desc    Search users by name
+// @route   GET /api/users/search
+// @access  Public
+const searchUsers = async (req, res) => {
+  try {
+    const { query } = req.query;
+    if (!query) return res.json([]);
+    const users = await User.find({ name: { $regex: query, $options: 'i' } }).select('_id name avatar');
+    res.json(users);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
 module.exports = {
   getUserById,
-  followUser
+  followUser,
+  searchUsers
 };
